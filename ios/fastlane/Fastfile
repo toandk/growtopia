@@ -1,0 +1,327 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+
+# Run bitrise build Staging
+# curl -X POST -H "Authorization: 3T8tMM8XBfkVTFqC--2cqDj7CM_rYfmteJMcgewFyilo8kdj6ydo8C3bMfd2HTwsErZTD6FNYtdjbGa55EDVEw" "https://api.bitrise.io/v0.1/apps/5312edcfdca311fe/builds" -d '{"hook_info":{"type":"bitrise"},"build_params":{"branch": "develop"}}'
+
+# Run bitrise build Production
+# curl -X POST -H "Authorization: 3T8tMM8XBfkVTFqC--2cqDj7CM_rYfmteJMcgewFyilo8kdj6ydo8C3bMfd2HTwsErZTD6FNYtdjbGa55EDVEw" "https://api.bitrise.io/v0.1/apps/5312edcfdca311fe/builds" -d '{"hook_info":{"type":"bitrise"},"build_params":{"branch": "develop", "workflow_id": "production"}}'
+
+REQUIRED_XCODE_VERSION = "9.3"
+XCODEPROJ = "Runner.xcodeproj"
+TARGET = "Runner"
+PROD_SCHEME = "Runner"
+DIAWI_TOKEN = "SFAADlloRBm2FSrCFrHJrgvrrIASV3fkmSdTYm4vb6"
+DEPLOYGATE_TOKEN = "a208f0eb32362056066e5b845a2a3b8a96b9dfde"
+
+MATTERMOST_WEBHOOK_URL_IOS_DEV = "https://chat.gapo.com.vn/hooks/k8uypfhwajfqubtia8kjx94hbh"
+MATTERMOST_WEBHOOK_URL2_IOS_GROUP = "https://chat.gapo.com.vn/hooks/qd6e7sq9z3n4bcjk54xqza3sgy"
+GP_IOS_TELEGRAM_TOKEN = "1029173176:AAF3Uv0xrgIz685QIFvpswv6bVZslIlJReE"
+EP3_TELEGRAM_TOKEN = "5559271235:AAFrJ_wwppVxQ4bhuL9EJ-hTooGTjhR-FjQ"
+
+ENV["FASTLANE_ITC_TEAM_ID"] = "868672"
+ENV["SPACESHIP_2FA_SMS_DEFAULT_PHONE_NUMBER"] = "+84985081404"
+ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"] = "fbyu-huau-pcim-cvkf"
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "30"
+
+VERSION_PATH = "./fastlane/version.plist"
+VERSION_KEY = "BuildNumber"
+
+fastlane_version "1.62.0"
+default_platform(:ios)
+
+fastlane_require 'spaceship'
+
+platform :ios do
+
+  original_branch = nil
+  temp_branch = nil
+  version_number = nil
+  build_number = nil
+  diawiLink = ""
+  shouldClean = false
+  noti_telegram = false
+
+  release_notes = "New build"
+
+  before_all do |lane, options|
+
+    shouldClean = options[:clean] ? options[:clean] : false
+    noti_telegram = options[:noti_telegram] ? options[:noti_telegram] : false
+    old_build_number = get_info_plist_value(path: "./Runner/Info.plist", key: "CFBundleVersion")
+    if lane != :clean_git_branch
+      automate_build_number()
+    end
+  end
+
+  after_all do |lane|
+    sh "git checkout ../Runner.xcodeproj/project.pbxproj"
+    sh "git checkout ../*/Info.plist"
+  end
+
+  desc "---------> Appstore"
+  lane :release do |options|  
+    cocoapods(
+      clean_install: false,
+      use_bundle_exec: false
+    )
+    gym(
+      scheme: PROD_SCHEME,
+      include_bitcode: false,
+      include_symbols: true,
+      clean: shouldClean,
+      export_xcargs: "-allowProvisioningUpdates",
+      export_options: {
+          method: "app-store",
+      }
+    )
+
+    unless options[:skip_upload]
+      testflight(
+        skip_submission: false,
+        skip_waiting_for_build_processing: true
+      )
+    end
+  end
+
+  desc "Submiting exist TestFlight build to review"
+  lane :submit_review do
+    deliver(
+#      build_number: '1381',
+      submit_for_review: true,
+      automatic_release: false,
+      force: true, # Skip HTMl report verification
+      skip_metadata: true,
+      skip_screenshots: true,
+      skip_binary_upload: true,
+      submission_information: {
+        add_id_info_limits_tracking: true,
+        add_id_info_serves_ads: false,
+        add_id_info_tracks_action: true,
+        add_id_info_tracks_install: true,
+        add_id_info_uses_idfa: true,
+        content_rights_has_rights: true,
+        content_rights_contains_third_party_content: true,
+        export_compliance_platform: 'ios',
+        export_compliance_compliance_required: false,
+        export_compliance_encryption_updated: false,
+        export_compliance_app_type: nil,
+        export_compliance_uses_encryption: false,
+        export_compliance_is_exempt: false,
+        export_compliance_contains_third_party_cryptography: false,
+        export_compliance_contains_proprietary_cryptography: false,
+        export_compliance_available_on_french_store: false
+      }
+    )
+  end
+  
+  private_lane :clean do |options|
+    cocoapods(
+      clean_install: false
+    )
+  end
+
+  lane :refresh_dsyms do |options|
+    version = options[:version]
+    build = options[:build]
+    download_dsyms(version: version, build_number: build) # Download dSYM files from iTC
+    upload_symbols_to_crashlytics(gsp_path: "Runner/GoogleService-Info.plist")   # Upload them to Crashlytics
+    clean_build_artifacts           # Delete the local dSYM files
+  end
+
+  lane :upload_tf do
+    testflight(
+      skip_submission: false,
+      skip_waiting_for_build_processing: true,
+      # groups: ['QA team'],
+      distribute_external: false,
+      notify_external_testers: false,
+      changelog: ''
+    )
+  end
+
+  lane :clean_git_branch do
+    clean_merged_git_branch()
+  end
+
+  def clean_merged_git_branch()
+    sh "git fetch origin --prune"
+    sh "git checkout workplace"
+    sh "git pull origin workplace"
+    sh "git branch --merged | egrep -v '(^\\*|master|develop|workplace)' | xargs git branch -d"
+    sh "git branch -r --merged | grep -v '\\*\\|master\\|develop\\|workplace' | sed 's/origin\\//:/' | xargs -n 1 git push origin"
+  end
+
+  def auto_git_tag()
+    build_number   = get_info_plist_value(path: "Runner/Info.plist", key: "CFBundleVersion")
+    version_number = get_version_number(xcodeproj: XCODEPROJ, target: TARGET)
+    complete_version_number = git_tag_string(version_number, build_number)
+    sh "git tag -ma \"#{complete_version_number}\""
+    sh "git push origin --tags"
+  end
+  
+  def automate_build_number() 
+    build_number = get_info_plist_value(path: VERSION_PATH, key: VERSION_KEY)
+    increment_build_number(
+      build_number: build_number
+    )
+    update_plist( # Sets a number entry
+      plist_path: VERSION_PATH,
+      block: proc do |plist|
+        plist[:BuildNumber] = build_number + 1
+      end
+    )
+  end
+
+  def notify_telegram()
+    build_number   = get_info_plist_value(path: "Runner/Info.plist", key: "CFBundleVersion")
+    version_number = get_version_number(xcodeproj: XCODEPROJ, target: TARGET)
+    print_success_message(version_number, build_number)
+    complete_version_number = version_string(version_number, build_number)
+    msg = "New iOS build #{complete_version_number} branch: #{git_branch}"
+    telegram(
+      token: EP3_TELEGRAM_TOKEN,
+      chat_id: "-625361132",
+      text: msg
+    )
+  end
+
+  def notify_mattermost(message, link, channel)
+    build_number   = get_info_plist_value(path: "Runner/Info.plist", key: "CFBundleShortVersionString")
+    version_number = get_version_number(xcodeproj: XCODEPROJ, target: TARGET)
+    print_success_message(version_number, build_number)
+    complete_version_number = version_string(version_number, build_number)
+    msg = "#{message}, version: ```#{version_number}```, branch: ```#{git_branch}``` \n#{link}"
+    command = "curl -i -X POST -H 'Content-Type: application/json' -d '{\"text\": \"#{msg} \"}' #{channel}" 
+    #UI.message("Build #{msg}")
+    sh command
+  end
+
+  error do |lane, exception, options|
+  	unless lane == :RC_deployment
+    	# reset_original_branch
+  	end
+  end
+
+  def version_string(version_number, build_number)
+      "#{version_number} (#{build_number})"
+  end
+
+  def git_tag_string(version_number, build_number)
+      "wp_v#{version_number}_b#{build_number}"
+  end
+
+  def commit_testcov
+      sh "git add ../xcov_output/index.html"
+      sh "git add ../xcov_output/report.json"
+      message = "\'Automated test coverage\'"
+      sh "git commit -m #{message}"
+  end
+
+  def print_success_message(version_number, build_number)
+      if version_number.to_s.strip.empty?
+      UI.user_error!("UNABLE TO GET VERSION NUMBER!!!")
+      return
+    end
+    if build_number.to_s.strip.empty?
+      UI.user_error!("UNABLE TO GET BUILD NUMBER!!!")
+      return
+    end
+    complete_version_number = version_string(version_number, build_number)
+    UI.success "Finished uploading version: #{complete_version_number}"
+  end
+
+  def increase_version_number(version_number)
+    version_array = version_number.split(".").map(&:to_i)
+    version_array[2] = version_array[2] + 1
+    if version_array[2] >= 10
+      version_array[2] = version_array[2] - 10
+      version_array[1] = version_array[1] + 1
+    end
+    if version_array[1] >= 10
+      version_array[1] = version_array[1] - 10
+      version_array[0] = version_array[0] + 1
+    end
+    return version_array.join(".")
+  end
+
+  def get_live_version_number(apple_id)
+    Spaceship::Tunes.login(apple_id)
+    Spaceship::Tunes.select_team
+    UI.message("Login successful")
+
+    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+    app = Spaceship::Tunes::Application.find(app_identifier)
+    if app.edit_version && (!app.edit_version.can_beta_test || app.edit_version.can_send_version_live)
+      edit_version = app.edit_version
+      version_number = edit_version.version
+      UI.message("App Store edit version: #{version_number}")
+      return version_number
+    end
+    live_version = app.live_version
+    version_number = live_version.version
+    UI.message("App Store live version: #{version_number}")
+    return version_number
+  end
+
+  private_lane :update_version_number do |options|    
+    build_number = options[:build_number]
+    if build_number.to_s.strip.empty? 
+      increment_build_number()
+    else 
+      increment_build_number({ build_number: build_number })
+    end
+
+    build_number   = get_build_number(xcodeproj: XCODEPROJ)
+    version_number = get_version_number(xcodeproj: XCODEPROJ, target: TARGET)
+    complete_version_number = version_string(version_number, build_number)
+
+    repo_clean = `git status --porcelain`.empty?
+    if repo_clean == false  
+      # Has changes to be commited.
+      commit_version_bump(
+        message: "Automated version bump to #{complete_version_number}",
+        xcodeproj: XCODEPROJ
+      )
+      push_to_git_remote({tags: false})
+    end
+  end
+
+  private_lane :change_to_temp_branch do
+    original_branch = git_branch
+    temp_branch = "temp_#{Time.now.to_i}"
+
+    if original_branch.to_s.empty?
+      UI.user_error!("UNABLE TO GET CURRENT BRANCH!!!")
+    end
+
+    sh "git checkout -b #{temp_branch}"
+  end
+
+  private_lane :update_carthage do
+    carthage(
+      platform: "ios", 
+      use_binaries: false, 
+      command: "update"
+      )
+  end
+
+  private_lane :reset_original_branch do
+    if original_branch.to_s.strip.empty?
+      UI.user_error!("UNABLE TO GET CURRENT BRANCH!!!")
+      return
+    end
+    if temp_branch.to_s.strip.empty?
+      UI.user_error!("UNABLE TO GET TEMP BRANCH!!!")
+      return
+    end
+    sh "git checkout #{original_branch}"
+    sh "git branch -D #{temp_branch}"
+  end
+end

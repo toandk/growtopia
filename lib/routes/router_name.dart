@@ -1,0 +1,31 @@
+class RouterName {
+  static const String loading = "/loading";
+  static const String signUp = "/signup";
+  static const String accountLogin = "/accountLogin";
+  static const String account = "/account";
+  static const String profile = "/profile";
+  static const String tabbar = "/tabbar";
+  static const String changePassword = "/changePassword";
+  static const String vocabularyLessonDetail = '/vocabularyLessonDetail';
+  static const String vocabularyLessonSummary = '/vocabularyLessonSummary';
+  static const String scanText = '/scanText';
+  static const String paywall = '/paywall';
+  static const String categoryDetail = '/categoryDetail';
+  static const String collectionDetail = '/collectionDetail';
+  static const String lessonBuilder = '/lessonBuilder';
+  static const String spellingGame = '/spellingGame';
+  static const String spellingEndGame = '/spellingEndGame';
+  static const String spellingGameIntro = '/spellingGameIntro';
+  static const String listeningGame = '/listeningGame';
+  static const String gamesList = '/gamesList';
+  static const String gameTetris = '/gameTetris';
+  static const String tetrisGameOver = '/tetrisGameOver';
+  static const String forgotPassword = '/forgotPassword';
+  static const String lessonEnd = '/lessonEnd';
+  static const String quiz = '/quiz';
+  static const String quizEnd = '/quizEnd';
+  static const String doodleJump = '/doodleJump';
+  static const String doodleJumpGameOver = '/doodleJumpGameOver';
+  static const String doodleJumpLeaderboard = '/doodleJumpLeaderboard';
+  static const String doodleJumpMenu = '/doodleJumpMenu';
+}

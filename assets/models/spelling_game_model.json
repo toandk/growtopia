@@ -1,0 +1,9 @@
+{
+  "id": "",
+  "name": "",
+  "description": "",
+  "cover": "",
+  "words": ["", ""],
+  "exercises": [{ "id": 1 }, { "id": 2 }],
+  "is_premium": true
+}

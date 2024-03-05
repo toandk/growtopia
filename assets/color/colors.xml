@@ -1,0 +1,21 @@
+<color name="work_primary">#30A960</color>
+
+<color name="content_primary">#26282C</color>
+<color name="content_secondary">#737682</color>
+<color name="content_tertiary">#C8CACF</color>
+<color name="content_inverse_primary">#C8CACF</color>
+
+<color name="bg_primary">#FFFFFF</color>
+<color name="bg_secondary">#C8CACF</color>
+<color name="bg_tertiary">#1421410F</color>
+<color name="bg_inverse_primary">#131416</color>
+
+<color name="line_primary">#DEDFE2</color>
+<color name="line_secondary">#C8CACF</color>
+<color name="line_tertiary">#E9EAEC</color>
+
+<color name="function_primary">#6FBE49</color>
+<color name="function_negative_primary">#E94040</color>
+<color name="function_accent_work_primary">#375464</color>
+<color name="function_accent_work_secondary">#30A960</color>
+<color name="function_link_primary">#096DD9</color>

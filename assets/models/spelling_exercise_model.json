@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "spelling_game_id": "",
+  "word": "",
+  "photo": "",
+  "voice": "",
+  "answers": ["", ""],
+  "correct_answer": 1,
+  "missing_index": 1,
+  "missing_length": 2,
+  "time": 5
+}
