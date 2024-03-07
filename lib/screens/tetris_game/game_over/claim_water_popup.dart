@@ -1,10 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:growtopia/generated/locales.g.dart';
-import 'package:growtopia/theme/colors.dart';
 import 'package:growtopia/theme/text_theme.dart';
-import 'package:growtopia/widgets/answer_button.dart';
 import 'package:growtopia/widgets/image_button.dart';
 import 'package:growtopia/widgets/stroke_text.dart';
 
@@ -17,7 +17,8 @@ class ClaimWaterPoup extends GetView<ClaimWaterController> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-          margin: const EdgeInsets.all(20),
+          width: min(320, Get.width - 40),
+          height: 500,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             boxShadow: const [
@@ -86,9 +87,6 @@ class ClaimWaterPoup extends GetView<ClaimWaterController> {
                         height: 64,
                         background: 'assets/images/ok_button_bg.png',
                         onTap: () => controller.claimAction(false)),
-                    const SizedBox(
-                      height: 30,
-                    ),
                   ],
                 ),
               ),

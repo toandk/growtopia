@@ -40,7 +40,9 @@ class TreePickerPopup extends StatelessWidget {
                         childAspectRatio: 5 / 6),
                     itemBuilder: (context, index) {
                       return _TreeCell(
-                          tree: trees[index], onTap: (() => onTap(index)));
+                          tree: trees[index],
+                          index: index,
+                          onTap: (() => onTap(index)));
                     }))),
       ],
     );
@@ -50,7 +52,9 @@ class TreePickerPopup extends StatelessWidget {
 class _TreeCell extends StatelessWidget {
   final TreeModel tree;
   final Function() onTap;
-  const _TreeCell({Key? key, required this.tree, required this.onTap})
+  final int index;
+  const _TreeCell(
+      {Key? key, required this.tree, required this.onTap, required this.index})
       : super(key: key);
 
   @override
@@ -79,7 +83,7 @@ class _TreeCell extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 4,
-                      child: TreeWidget(tree: tree),
+                      child: TreeWidget(tree: tree, index: index),
                     ),
                     Expanded(
                       flex: 2,

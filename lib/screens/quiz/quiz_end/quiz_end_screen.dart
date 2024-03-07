@@ -199,6 +199,9 @@ class _BottomView extends StatelessWidget {
                 const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 12),
             child: ImageButton(
                 title: LocaleKeys.quiz_continueButton.tr,
+                width: 180,
+                height: 70,
+                fontSize: 24,
                 background: 'assets/images/ok_button_bg.png',
                 onTap: _continueAction)),
       ),

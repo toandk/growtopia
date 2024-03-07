@@ -1,4 +1,5 @@
 import 'package:flame/flame.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_google_wallet/generated/l10n.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -6,13 +7,11 @@ import 'package:growtopia/configs/constants.dart';
 import 'package:growtopia/screens/doodle_jump/assets.dart';
 import 'package:growtopia/screens/doodle_jump/high_scores.dart';
 import 'package:growtopia/theme/themes.dart';
-import 'package:growtopia/utils/rc_payment_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:growtopia/models/token/token_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:growtopia/utils/utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -32,6 +31,7 @@ void main() async {
   if (!kIsWeb) {
     MobileAds.instance.initialize();
   }
+  FlameAudio.updatePrefix('assets/');
   await _loadDoodleJumpGame();
 
   await SystemChrome.setPreferredOrientations([

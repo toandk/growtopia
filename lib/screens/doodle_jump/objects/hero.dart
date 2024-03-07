@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/services.dart';
+import 'package:growtopia/screens/doodle_jump/ui/sound_manager.dart';
 import 'package:growtopia/utils/sound_manager.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
@@ -64,16 +65,16 @@ class MyHero extends BodyComponent<MyGame>
     }
 
     fallComponent = SpriteComponent(
-      sprite: Assets.heroFall,
-      size: size,
-      anchor: Anchor.center,
-    );
+        sprite: Assets.heroFall,
+        size: size,
+        anchor: Anchor.center,
+        priority: 1);
 
     jumpComponent = SpriteComponent(
-      sprite: Assets.heroJump,
-      size: size,
-      anchor: Anchor.center,
-    );
+        sprite: Assets.heroJump,
+        size: size,
+        anchor: Anchor.center,
+        priority: 1);
 
     currentComponent = fallComponent;
     add(currentComponent);
@@ -84,7 +85,7 @@ class MyHero extends BodyComponent<MyGame>
     final velocity = body.linearVelocity;
     body.linearVelocity = Vector2(velocity.x, -7.5);
     state = HeroState.jump;
-    SoundManager.playLocalSound('sounds/jump-arcade.mp3');
+    DJSoundManager.playJumpSound();
   }
 
   void hit() {
@@ -100,7 +101,7 @@ class MyHero extends BodyComponent<MyGame>
     state = HeroState.dead;
     body.setFixedRotation(false);
     body.applyAngularImpulse(2);
-    SoundManager.playLocalSound('sounds/jumponmonster.mp3');
+    DJSoundManager.playFallSound();
   }
 
   void takeJetpack() {
@@ -108,7 +109,7 @@ class MyHero extends BodyComponent<MyGame>
     durationJetpack = 0;
     if (!hasJetpack) add(jetpackComponent);
     hasJetpack = true;
-    SoundManager.playLocalSound('sounds/jetpack2.mp3');
+    DJSoundManager.playEffectSound('sounds/jetpack2.mp3');
   }
 
   void takeBubbleShield() {
@@ -122,7 +123,7 @@ class MyHero extends BodyComponent<MyGame>
     game.coins++;
     final velocity = body.linearVelocity;
     body.linearVelocity = Vector2(velocity.x, -8.5);
-    SoundManager.playLocalSound('sounds/collect.mp3');
+    DJSoundManager.playCollectWaterSound();
   }
 
   void takeBullet() {
@@ -133,7 +134,7 @@ class MyHero extends BodyComponent<MyGame>
   void fireBullet() {
     if (state == HeroState.dead) return;
     game.addBullets();
-    SoundManager.playLocalSound('sounds/shotgun_shoot.mp3');
+    DJSoundManager.playShotSound();
   }
 
   @override
@@ -177,7 +178,7 @@ class MyHero extends BodyComponent<MyGame>
   }
 
   void _setComponent(PositionComponent component) {
-    if (accelerationX > 0) {
+    if (accelerationX < 0) {
       if (!component.isFlippedHorizontally) {
         component.flipHorizontally();
       }
@@ -266,7 +267,7 @@ class MyHero extends BodyComponent<MyGame>
   }
 
   @override
-  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+  bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     if (keysPressed.contains(LogicalKeyboardKey.keyD) ||
         keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
       accelerationX = 1;

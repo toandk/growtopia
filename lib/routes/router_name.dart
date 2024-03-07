@@ -28,4 +28,5 @@ class RouterName {
   static const String doodleJumpGameOver = '/doodleJumpGameOver';
   static const String doodleJumpLeaderboard = '/doodleJumpLeaderboard';
   static const String doodleJumpMenu = '/doodleJumpMenu';
+  static const String forestScreen = '/forestScreen';
 }

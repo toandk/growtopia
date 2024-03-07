@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_google_wallet/flutter_google_wallet_plugin.dart';
 import 'package:growtopia/base/controller/base_controller.dart';
 import 'package:get/get.dart';
 import 'package:growtopia/base/networking/base/supabase_api.dart';
 import 'package:growtopia/models/token/token_manager.dart';
 import 'package:growtopia/models/tree/tree_model.dart';
+import 'package:growtopia/routes/routes.dart';
+import 'package:growtopia/screens/forest_screen/forest_land_widget.dart';
 import 'package:growtopia/screens/home/tree_page_controller.dart';
 import 'package:growtopia/screens/tabbar/tabbar_controller.dart';
 import 'package:growtopia/utils/popup.dart';
@@ -14,12 +15,9 @@ class HomeController extends BaseListController {
   final RxInt userWaters = 0.obs;
   final PageController pageController = PageController();
 
-  final flutterGoogleWalletPlugin = FlutterGoogleWalletPlugin();
-
   @override
   void onInit() {
     super.onInit();
-    flutterGoogleWalletPlugin.initWalletClient();
 
     getListItems();
     userWaters.value = TokenManager.userInfo.value.waters;
@@ -32,6 +30,10 @@ class HomeController extends BaseListController {
   void onClose() {
     super.onClose();
     pageController.dispose();
+  }
+
+  void openForestScreen() {
+    Get.toNamed(RouterName.forestScreen);
   }
 
   void onChangePage(int page) {
@@ -52,7 +54,8 @@ class HomeController extends BaseListController {
   }
 
   void boughtNewTree(TreeModel tree) {
-    Get.put(TreePageController(tree: tree), tag: tree.id.toString());
+    Get.put(TreePageController(tree: tree, index: listItem.length),
+        tag: tree.id.toString());
     listItem.add(tree);
   }
 
@@ -72,8 +75,10 @@ class HomeController extends BaseListController {
       final List trees =
           response.map((json) => TreeModel.fromJson(json)).toList();
 
-      for (TreeModel tree in trees) {
-        Get.put(TreePageController(tree: tree), tag: tree.id.toString());
+      for (int i = 0; i < trees.length; i++) {
+        final tree = trees[i];
+        Get.put(TreePageController(tree: tree, index: i),
+            tag: tree.id.toString());
       }
       handleResponse(trees, listItem.isEmpty);
     } catch (error) {

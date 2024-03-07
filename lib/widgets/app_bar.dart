@@ -16,6 +16,7 @@ class MJAppBar extends AppBar {
   final Color? backgroundColor;
   final PreferredSizeWidget? bottomWidget;
   final List<Widget>? rightViews;
+  final Widget? leftWidget;
   MJAppBar(
       {Key? key,
       this.hasBack = true,
@@ -25,6 +26,7 @@ class MJAppBar extends AppBar {
       this.bottomShadow = false,
       this.bottomWidget,
       this.rightViews,
+      this.leftWidget,
       SystemUiOverlayStyle? systemOverlayStyle})
       : super(
             key: key,
@@ -39,12 +41,13 @@ class MJAppBar extends AppBar {
                         height: 8, decoration: BottomShadowDecoration()))
                 : bottomWidget,
             actions: rightViews,
-            leading: hasBack
-                ? BackButton(
-                    color: isWhite
-                        ? GPColor.contentPrimary
-                        : GPColor.contentInversePrimary)
-                : Container(),
+            leading: leftWidget ??
+                (hasBack
+                    ? BackButton(
+                        color: isWhite
+                            ? GPColor.contentPrimary
+                            : GPColor.contentInversePrimary)
+                    : Container()),
             title: StrokeText(
               titleString,
               style: textStyle(GPTypography.h2)

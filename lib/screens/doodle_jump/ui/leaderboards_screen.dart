@@ -119,12 +119,12 @@ class _RankRow extends StatelessWidget {
     final color = isMe
         ? Colors.deepOrange
         : (index == 0
-            ? Colors.deepOrange
+            ? Colors.pink
             : (index == 1
                 ? Colors.orange
                 : index == 2
                     ? Colors.blue
-                    : Colors.black));
+                    : Colors.white));
     return Container(
       height: 60,
       margin: const EdgeInsets.only(bottom: 12),

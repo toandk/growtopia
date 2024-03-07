@@ -9,7 +9,7 @@ class JetpackGroup extends PositionComponent {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    priority = 2;
+    priority = 0;
     add(
       SpriteComponent(
         sprite: Assets.jetpack,

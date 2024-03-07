@@ -14,6 +14,7 @@ class TreePhoto extends StatelessWidget {
   final double width, height;
   final double? progress;
   final BorderRadius? borderRadius;
+  final int index;
   const TreePhoto(
       {Key? key,
       required this.url,
@@ -21,11 +22,13 @@ class TreePhoto extends StatelessWidget {
       required this.width,
       required this.height,
       this.progress,
-      this.borderRadius})
+      this.borderRadius,
+      required this.index})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final img = 'assets/images/ground${index % 4 + 1}.png';
     return Bounceable(
       onTap: onTap,
       child: Container(
@@ -44,7 +47,7 @@ class TreePhoto extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Image.asset(
-              'assets/images/ground.png',
+              img,
               fit: BoxFit.contain,
               width: width - 40,
               height: width - 40,
@@ -65,7 +68,9 @@ class TreePhoto extends StatelessWidget {
 
 class TreeWidget extends StatelessWidget {
   final TreeModel tree;
-  const TreeWidget({Key? key, required this.tree}) : super(key: key);
+  final int index;
+  const TreeWidget({Key? key, required this.tree, required this.index})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +79,7 @@ class TreeWidget extends StatelessWidget {
       children: [
         TreePhoto(
           url: url,
+          index: index,
           width: 240,
           height: 240,
         ),

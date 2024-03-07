@@ -24,7 +24,7 @@ extension PowerUpExtension on PowerUpType {
 }
 
 class PowerUp extends BodyComponent<MyGame> {
-  static Vector2 size = Vector2(.25, .35);
+  static Vector2 size = Vector2(.35, .49);
   final Vector2 _position;
   bool isTaken = false;
 

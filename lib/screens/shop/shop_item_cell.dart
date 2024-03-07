@@ -78,7 +78,7 @@ class ShopItemCell extends StatelessWidget {
                                 child: ImageButton(
                                     title: item.priceString(),
                                     width: 70,
-                                    height: 36,
+                                    height: 30,
                                     fontSize: 14,
                                     background:
                                         'assets/images/ok_button_bg.png',

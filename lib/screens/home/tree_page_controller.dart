@@ -25,6 +25,7 @@ import 'package:uuid/uuid.dart';
 
 class TreePageController extends BaseController {
   final TreeModel tree;
+  final int index;
   final RxBool isPlanted = false.obs;
   final RxInt level = 0.obs;
   final RxBool isDead = false.obs;
@@ -41,7 +42,7 @@ class TreePageController extends BaseController {
 
   final googleWallet = GoogleWallet();
 
-  TreePageController({required this.tree});
+  TreePageController({required this.tree, required this.index});
 
   @override
   void onInit() {
@@ -133,17 +134,17 @@ class TreePageController extends BaseController {
   }
 
   void showTreeInfo() {
-    Get.dialog(TreeInfoPopup(tree: tree));
+    Get.dialog(TreeInfoPopup(tree: tree, index: index));
   }
 
   void _startLevelingUp() {
     tree.levelUp(tree.waterList![level.value - 1]);
     // level.value = level.value + 1;
     isPlanted.value = true;
+    levelUpRemainTime.value = tree.levelUpTimes![level.value - 1];
     tree.levelUpTime =
         DateTime.now().add(Duration(seconds: levelUpRemainTime.value));
     levelUpTotalTime.value = tree.levelUpTimes![level.value - 1];
-    levelUpRemainTime.value = tree.levelUpTimes![level.value - 1];
 
     _startTimer();
   }

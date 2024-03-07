@@ -31,6 +31,11 @@ class HomeScreen extends GetView<HomeController> {
           backgroundColor: Colors.transparent,
           appBar: MJAppBar(
               hasBack: false,
+              leftWidget: IconButton(
+                onPressed: controller.openForestScreen,
+                icon: const Icon(Icons.forest),
+                color: Colors.white,
+              ),
               isWhite: false,
               backgroundColor: Colors.transparent,
               titleString: 'Growtopia',
@@ -46,7 +51,10 @@ class HomeScreen extends GetView<HomeController> {
                         onPageChanged: controller.onChangePage,
                         children: [
                           ...controller.listItem
-                              .map((tree) => TreePage(tree))
+                              .asMap()
+                              .entries
+                              .map((element) =>
+                                  TreePage(element.value, index: element.key))
                               .toList(),
                           BuyNewTreePage(
                             onTap: controller.openShop,

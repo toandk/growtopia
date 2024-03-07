@@ -1,6 +1,7 @@
 import 'package:growtopia/screens/doodle_jump/doodle_jump_screen.dart';
 import 'package:growtopia/screens/doodle_jump/ui/leaderboards_screen.dart';
 import 'package:growtopia/screens/doodle_jump/ui/main_menu_screen.dart';
+import 'package:growtopia/screens/forest_screen/forest_screen.dart';
 import 'package:growtopia/screens/loading/loading_screen.dart';
 import 'package:growtopia/screens/quiz/quiz_end/quiz_end_screen.dart';
 import 'package:growtopia/screens/quiz/quiz_screen.dart';
@@ -48,5 +49,9 @@ class Pages {
         name: RouterName.doodleJumpLeaderboard,
         binding: DoodleJumpLeaderboardScreenBinding(),
         page: () => const DoodleJumpLeaderboardScreen()),
+    GetPage(
+        name: RouterName.forestScreen,
+        binding: ForestScreenBinding(),
+        page: () => const ForestScreen()),
   ];
 }

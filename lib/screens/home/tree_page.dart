@@ -2,27 +2,20 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
-import 'package:growtopia/generated/locales.g.dart';
 import 'package:growtopia/models/tree/tree_model.dart';
-import 'package:growtopia/screens/home/level_up_finish_popup.dart';
 import 'package:growtopia/screens/home/level_up_time_view.dart';
 import 'package:growtopia/screens/home/tree_widget.dart';
 import 'package:growtopia/theme/text_theme.dart';
-import 'package:growtopia/widgets/answer_button.dart';
-import 'package:growtopia/widgets/bubble_view.dart';
-import 'package:growtopia/widgets/circular_button.dart';
-import 'package:growtopia/widgets/stroke_text.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'tree_page_controller.dart';
 
 class TreePage extends StatelessWidget {
   final TreeModel tree;
-  const TreePage(this.tree, {Key? key}) : super(key: key);
+  final int index;
+  const TreePage(this.tree, {Key? key, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +54,7 @@ class TreePage extends StatelessWidget {
                                 url: tree.health == -1
                                     ? ''
                                     : tree.getPhoto(controller.level.value),
+                                index: index,
                                 width: photoWidth - 20,
                                 height: photoWidth - 20,
                               )),
@@ -110,27 +104,32 @@ class TreePage extends StatelessWidget {
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(15)),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12),
-                                  child: Row(
-                                    children: [
-                                      Image.asset('assets/images/water.png',
-                                          width: 16, height: 16),
-                                      const SizedBox(
-                                        width: 4,
-                                      ),
-                                      Text(
-                                          controller
-                                              .tree
-                                              .waterList![
-                                                  controller.level.value - 1]
-                                              .toString(),
-                                          style: textStyle(GPTypography.body16)
-                                              ?.mergeColor(
-                                                  const Color(0xFF2664b9))
-                                              .merge(const TextStyle(
-                                                  fontFamily: 'BoldenVan'))),
-                                    ],
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset('assets/images/water.png',
+                                            width: 16, height: 16),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                            controller
+                                                .tree
+                                                .waterList![
+                                                    controller.level.value - 1]
+                                                .toString(),
+                                            style:
+                                                textStyle(GPTypography.body16)
+                                                    ?.mergeColor(
+                                                        const Color(0xFF2664b9))
+                                                    .merge(const TextStyle(
+                                                        fontFamily:
+                                                            'BoldenVan'))),
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],

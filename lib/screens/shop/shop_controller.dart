@@ -3,6 +3,7 @@ import 'package:growtopia/base/controller/base_controller.dart';
 import 'package:growtopia/base/networking/base/supabase_api.dart';
 import 'package:growtopia/generated/locales.g.dart';
 import 'package:growtopia/models/shop_item/shop_item_model.dart';
+import 'package:growtopia/models/token/token_manager.dart';
 import 'package:growtopia/models/tree/tree_model.dart';
 import 'package:growtopia/screens/home/home_controller.dart';
 import 'package:growtopia/utils/popup.dart';
@@ -44,6 +45,7 @@ class ShopController extends BaseListController {
             message: LocaleKeys.shop_buyTreeSuccess.tr,
             type: SnackbarType.success);
         _getTreeInfo(newTree.id ?? 0);
+        TokenManager.getNewUserInfo();
       } catch (error) {
         handleError(error);
       }

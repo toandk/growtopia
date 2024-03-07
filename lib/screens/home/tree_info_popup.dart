@@ -8,7 +8,8 @@ import 'package:growtopia/widgets/stroke_text.dart';
 
 class TreeInfoPopup extends StatelessWidget {
   final TreeModel tree;
-  const TreeInfoPopup({super.key, required this.tree});
+  final int index;
+  const TreeInfoPopup({super.key, required this.tree, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,7 @@ class TreeInfoPopup extends StatelessWidget {
                   const SizedBox(height: 20),
                   TreePhoto(
                     url: tree.getPhoto(tree.getActualLevel()),
+                    index: index,
                     width: 180,
                     height: 180,
                   ),

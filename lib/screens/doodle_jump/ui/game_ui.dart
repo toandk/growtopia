@@ -78,7 +78,7 @@ class GameUI extends PositionComponent with HasGameRef<MyGame> {
     add(btPause);
     add(coin);
     add(gun);
-    add(fps);
+    // add(fps);
     add(totalBodies);
     add(totalScore);
     add(totalCoins);

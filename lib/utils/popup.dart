@@ -173,7 +173,7 @@ class _AlertView extends StatelessWidget {
               ? Row(
                   children: [
                     ImageButton(
-                      title: '',
+                      title: LocaleKeys.alert_cancel.tr.toUpperCase(),
                       background: 'assets/images/cancel_bt.png',
                       onTap: () => Get.back(),
                       height: 54,
@@ -182,8 +182,8 @@ class _AlertView extends StatelessWidget {
                     const Spacer(),
                     doneBtn ??
                         ImageButton(
-                          title: '',
-                          background: 'assets/images/ok_bt.png',
+                          title: LocaleKeys.alert_ok.tr.toUpperCase(),
+                          background: 'assets/images/ok_button_bg.png',
                           onTap: () => Get.back(result: true),
                           height: 54,
                           width: 140,
@@ -192,8 +192,8 @@ class _AlertView extends StatelessWidget {
                 )
               : doneBtn ??
                   ImageButton(
-                    title: '',
-                    background: 'assets/images/ok_bt.png',
+                    title: LocaleKeys.alert_ok.tr.toUpperCase(),
+                    background: 'assets/images/ok_button_bg.png',
                     onTap: () => Get.back(result: true),
                     height: 50,
                     width: 120,
