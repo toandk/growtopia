@@ -79,7 +79,7 @@ class TreePageController extends BaseController {
           .showSnackBar(message: LocaleKeys.home_waitLevelingMessage.tr);
       return;
     }
-    if (tree.level == tree.waterList!.length) {
+    if (tree.level! == tree.waterList!.length + 1) {
       Popup.instance.showSnackBar(message: LocaleKeys.home_treeMaxLevel.tr);
       return;
     }
@@ -157,7 +157,7 @@ class TreePageController extends BaseController {
         t.cancel();
         _timer = null;
         level.value = level.value + 1;
-        if (level.value == tree.waterList!.length - 1) {
+        if (level.value == tree.waterList!.length + 1) {
           Get.dialog(
               MaxLevelPopup(
                   imageUrl: tree.rewardCard ?? '',

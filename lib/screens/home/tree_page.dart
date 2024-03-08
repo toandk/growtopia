@@ -8,6 +8,7 @@ import 'package:growtopia/models/tree/tree_model.dart';
 import 'package:growtopia/screens/home/level_up_time_view.dart';
 import 'package:growtopia/screens/home/tree_widget.dart';
 import 'package:growtopia/theme/text_theme.dart';
+import 'package:growtopia/widgets/image_button.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'tree_page_controller.dart';
@@ -74,14 +75,13 @@ class TreePage extends StatelessWidget {
               ),
             ),
             Obx(() => !controller.isPlanted.value
-                ? Bounceable(
+                ? ImageButton(
+                    title: 'PLANT',
+                    background: 'assets/images/plant_bt.png',
                     onTap: controller.plantAction,
-                    child: Image.asset(
-                      'assets/images/plant_bt.png',
-                      fit: BoxFit.fill,
-                      width: 180,
-                      height: 60,
-                    ))
+                    width: 180,
+                    height: 60,
+                  )
                 : SizedBox(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -116,11 +116,16 @@ class TreePage extends StatelessWidget {
                                           width: 4,
                                         ),
                                         Text(
-                                            controller
-                                                .tree
-                                                .waterList![
-                                                    controller.level.value - 1]
-                                                .toString(),
+                                            controller.level.value - 1 <
+                                                    controller
+                                                        .tree.waterList!.length
+                                                ? controller
+                                                    .tree
+                                                    .waterList![
+                                                        controller.level.value -
+                                                            1]
+                                                    .toString()
+                                                : '',
                                             style:
                                                 textStyle(GPTypography.body16)
                                                     ?.mergeColor(

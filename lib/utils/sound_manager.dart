@@ -1,10 +1,9 @@
-import 'package:audioplayers/audioplayers.dart' as AudioPlayers;
+import 'package:flame_audio/flame_audio.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart' as JustAudio;
 import 'package:just_audio_cache/just_audio_cache.dart';
 
 class SoundManager {
-  static final _localPlayer = AudioPlayers.AudioPlayer();
   static final _remotePlayer = JustAudio.AudioPlayer();
   static final RxDouble downloadingProgress = 0.0.obs;
 
@@ -42,12 +41,11 @@ class SoundManager {
 
   static void playTetrisMove(bool isMuted) async {
     if (isMuted) return;
-    await playLocalSound('sounds/move.mp3');
+    await FlameAudio.play('sounds/move.mp3');
   }
 
   static Future playLocalSound(String sound) async {
-    await _localPlayer.release();
-    await _localPlayer.play(AudioPlayers.AssetSource(sound));
+    await FlameAudio.play(sound);
   }
 
   static void playAVoice(String url, {bool slow = false}) async {

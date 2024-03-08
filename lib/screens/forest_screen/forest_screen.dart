@@ -56,7 +56,7 @@ class ForestScreen extends GetView<ForestController> {
                             .toList(),
                       )),
               ),
-              const SizedBox(height: 110),
+              const SizedBox(height: 30),
             ],
           ),
         ),
