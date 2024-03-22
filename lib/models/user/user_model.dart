@@ -6,6 +6,7 @@ class UserModel {
   String? email;
   bool? havePassword;
   int waters = 0;
+  int fruits = 0;
 
   UserModel(
       {this.id,
@@ -14,7 +15,8 @@ class UserModel {
       this.isTeacher,
       this.email,
       this.havePassword,
-      this.waters = 0});
+      this.waters = 0,
+      this.fruits = 0});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -24,6 +26,7 @@ class UserModel {
     email = json['email'];
     havePassword = json['have_password'];
     waters = json['drops'] ?? 0;
+    fruits = json['fruits'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +38,7 @@ class UserModel {
     data['email'] = email;
     data['have_password'] = havePassword;
     data['drops'] = waters;
+    data['fruits'] = fruits;
     return data;
   }
 }

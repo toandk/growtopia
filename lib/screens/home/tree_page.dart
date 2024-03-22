@@ -6,6 +6,7 @@ import 'package:flutter_bounceable/flutter_bounceable.dart';
 import 'package:get/get.dart';
 import 'package:growtopia/models/tree/tree_model.dart';
 import 'package:growtopia/screens/home/level_up_time_view.dart';
+import 'package:growtopia/screens/home/fruits_layer.dart';
 import 'package:growtopia/screens/home/tree_widget.dart';
 import 'package:growtopia/theme/text_theme.dart';
 import 'package:growtopia/widgets/image_button.dart';
@@ -59,6 +60,12 @@ class TreePage extends StatelessWidget {
                                 width: photoWidth - 20,
                                 height: photoWidth - 20,
                               )),
+                          Obx(() => FruitsLayer(
+                              width: photoWidth - 20,
+                              height: photoWidth - 20,
+                              animated: controller.isAnimatingFruits.value,
+                              fruitsCount: controller.fruitsCount.value,
+                              onTap: controller.collectSeed)),
                         ],
                       ),
                     ),
@@ -69,7 +76,18 @@ class TreePage extends StatelessWidget {
                         ? LevelUpTimeView(
                             timeRemain: controller.levelUpRemainTime.value,
                             totalTime: controller.levelUpTotalTime.value)
-                        : Container()),
+                        : Container(height: 24)),
+                    Obx(() => controller.fruitsCount.value > 0
+                        ? ImageButton(
+                            width: 160,
+                            height: 60,
+                            title: 'Collect Fruits',
+                            background: 'assets/images/ok_button_bg.png',
+                            onTap: controller.collectSeed,
+                          )
+                        : Container(
+                            height: 60,
+                          ))
                   ],
                 ),
               ),

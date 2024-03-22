@@ -5,6 +5,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:google_wallet/google_wallet.dart';
 import 'package:growtopia/base/controller/base_controller.dart';
 import 'package:growtopia/base/networking/base/supabase_api.dart';
@@ -20,8 +21,6 @@ import 'package:growtopia/utils/popup.dart';
 import 'package:growtopia/utils/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:uuid/uuid.dart';
 
 class TreePageController extends BaseController {
   final TreeModel tree;
@@ -32,8 +31,11 @@ class TreePageController extends BaseController {
   final Rx<DateTime> levelUpTime =
       (DateTime.now().add(const Duration(seconds: -1000))).obs;
   Timer? _timer;
+  Timer? _fruitTimer;
   RxInt levelUpRemainTime = 0.obs;
   RxInt levelUpTotalTime = (-1).obs;
+  RxInt fruitsCount = 0.obs;
+  RxBool isAnimatingFruits = false.obs;
 
   String get tag => tree.id!.toString();
 
@@ -52,6 +54,8 @@ class TreePageController extends BaseController {
     isDead.value = tree.health == -1;
     levelUpTime.value =
         tree.levelUpTime ?? DateTime.now().add(const Duration(seconds: -1000));
+    _calculateFruitsCount();
+    _startFruitTimer();
 
     if (tree.isLevelingUp()) {
       levelUpRemainTime.value =
@@ -70,6 +74,8 @@ class TreePageController extends BaseController {
     super.onClose();
     _timer?.cancel();
     _timer = null;
+    _fruitTimer?.cancel();
+    _fruitTimer = null;
     confettiController.dispose();
   }
 
@@ -202,5 +208,45 @@ class TreePageController extends BaseController {
 
   void openGames() {
     Get.find<TabbarController>().changeIndex(2);
+  }
+
+  void collectSeed() async {
+    if (isLoading.value) return;
+    isLoading.value = true;
+    try {
+      final fruits = await SupabaseAPI.querySql(
+          functionName: 'collect_fruit',
+          params: {'treeid': tree.id, 'itemid': tree.itemId});
+      tree.collectTime = DateTime.now();
+      _calculateFruitsCount();
+      isAnimatingFruits.value = true;
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        isAnimatingFruits.value = false;
+      });
+      TokenManager.getNewUserInfo();
+      Popup.instance.showSnackBar(
+          message: 'You\'ve just gained $fruits \$Fruits',
+          type: SnackbarType.success);
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  void _calculateFruitsCount() {
+    final timeDiff =
+        DateTime.now().difference(tree.collectTime ?? tree.createdAt!);
+    final hours = min(timeDiff.inHours, 24);
+    if (hours >= 1) {
+      fruitsCount.value = min(
+          6, (hours * tree.fruitGenSpeeds![tree.getActualLevel() - 1]).toInt());
+    } else {
+      fruitsCount.value = 0;
+    }
+  }
+
+  void _startFruitTimer() {
+    _fruitTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _calculateFruitsCount();
+    });
   }
 }

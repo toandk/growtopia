@@ -22,14 +22,16 @@ class ShopScreen extends GetView<ShopController> {
   Widget build(BuildContext context) {
     HomeController homeController = Get.find();
     return Scaffold(
-      backgroundColor: Color(0xffadb5bd),
+      backgroundColor: const Color(0xffadb5bd),
       appBar: MJAppBar(
         hasBack: false,
         isWhite: false,
         backgroundColor: Colors.transparent,
         titleString: "Shop",
         rightViews: [
-          Obx(() => WaterDropView(waterDrops: homeController.userWaters.value))
+          Obx(() => WaterDropView(
+              waterDrops: homeController.userWaters.value,
+              fruits: homeController.userFruits.value))
         ],
       ),
       body: Padding(

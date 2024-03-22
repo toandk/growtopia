@@ -40,8 +40,9 @@ class HomeScreen extends GetView<HomeController> {
               backgroundColor: Colors.transparent,
               titleString: 'Growtopia',
               rightViews: [
-                Obx(() =>
-                    WaterDropView(waterDrops: controller.userWaters.value))
+                Obx(() => WaterDropView(
+                    waterDrops: controller.userWaters.value,
+                    fruits: controller.userFruits.value))
               ]),
           body: Column(
             children: [
@@ -87,27 +88,48 @@ class HomeScreen extends GetView<HomeController> {
 
 class WaterDropView extends StatelessWidget {
   final int waterDrops;
-  const WaterDropView({super.key, required this.waterDrops});
+  final int fruits;
+  const WaterDropView(
+      {super.key, required this.waterDrops, required this.fruits});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 30,
+      // height: 30,
       margin: const EdgeInsets.only(right: 8),
       padding: const EdgeInsets.only(left: 12, right: 12),
       decoration: BoxDecoration(
           color: Colors.black12, borderRadius: BorderRadius.circular(15)),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset('assets/images/water.png', width: 24, height: 24),
-          const SizedBox(width: 8),
-          Text(
-            waterDrops.toString(),
-            style: textStyle(GPTypography.body16)
-                ?.mergeColor(Colors.yellow)
-                .mergeFontSize(14)
-                .merge(const TextStyle(fontFamily: 'BoldenVan')),
-          ).marginOnly(top: 2),
+          Row(
+            children: [
+              Image.asset('assets/images/water.png', width: 24, height: 24),
+              const SizedBox(width: 8),
+              Text(
+                waterDrops.toString(),
+                style: textStyle(GPTypography.body16)
+                    ?.mergeColor(Colors.yellow)
+                    .mergeFontSize(14)
+                    .merge(const TextStyle(fontFamily: 'BoldenVan')),
+              ).marginOnly(top: 2),
+            ],
+          ),
+          Row(
+            children: [
+              Image.asset('assets/images/ic_fruit_small.png',
+                  width: 20, height: 20),
+              const SizedBox(width: 8),
+              Text(
+                fruits.toString(),
+                style: textStyle(GPTypography.body16)
+                    ?.mergeColor(Colors.white)
+                    .mergeFontSize(14)
+                    .merge(const TextStyle(fontFamily: 'BoldenVan')),
+              ).marginOnly(top: 2),
+            ],
+          ),
         ],
       ),
     );

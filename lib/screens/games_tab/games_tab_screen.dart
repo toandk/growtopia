@@ -32,8 +32,9 @@ class GamesTabScreen extends GetView<GamesTabController> {
               backgroundColor: Colors.transparent,
               titleString: 'Mini Games',
               rightViews: [
-                Obx(() =>
-                    WaterDropView(waterDrops: homeController.userWaters.value))
+                Obx(() => WaterDropView(
+                    waterDrops: homeController.userWaters.value,
+                    fruits: homeController.userFruits.value))
               ]),
           body: Padding(
               padding: const EdgeInsets.only(top: 20, bottom: 20),

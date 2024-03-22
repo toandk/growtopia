@@ -5,14 +5,13 @@ import 'package:growtopia/base/networking/base/supabase_api.dart';
 import 'package:growtopia/models/token/token_manager.dart';
 import 'package:growtopia/models/tree/tree_model.dart';
 import 'package:growtopia/routes/routes.dart';
-import 'package:growtopia/screens/forest_screen/forest_land_widget.dart';
 import 'package:growtopia/screens/home/tree_page_controller.dart';
 import 'package:growtopia/screens/tabbar/tabbar_controller.dart';
-import 'package:growtopia/utils/popup.dart';
 
 class HomeController extends BaseListController {
   final RxInt currentPage = 0.obs;
   final RxInt userWaters = 0.obs;
+  final RxInt userFruits = 0.obs;
   final PageController pageController = PageController();
 
   @override
@@ -21,8 +20,10 @@ class HomeController extends BaseListController {
 
     getListItems();
     userWaters.value = TokenManager.userInfo.value.waters;
+    userFruits.value = TokenManager.userInfo.value.fruits;
     TokenManager.userInfo.listen((p0) {
       userWaters.value = p0.waters;
+      userFruits.value = p0.fruits;
     });
   }
 

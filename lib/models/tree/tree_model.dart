@@ -14,6 +14,9 @@ class TreeModel {
   DateTime? levelUpTime;
   int waterCount = 0;
   String? rewardCard;
+  DateTime? collectTime;
+  DateTime? createdAt;
+  List? fruitGenSpeeds;
 
   TreeModel(
       {this.id,
@@ -30,7 +33,10 @@ class TreeModel {
       this.levelUpTimes,
       this.levelUpTime,
       this.waterCount = 0,
-      this.rewardCard});
+      this.rewardCard,
+      this.collectTime,
+      this.fruitGenSpeeds,
+      this.createdAt});
 
   TreeModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -50,6 +56,9 @@ class TreeModel {
         : DateTime.now();
     waterCount = json['water_count'] ?? 0;
     rewardCard = json['reward_card'];
+    collectTime = DateTime.tryParse(json['collect_time'] ?? '');
+    fruitGenSpeeds = json['fruit_gen_speed'];
+    createdAt = DateTime.tryParse(json['created_at'] ?? '');
   }
 
   Map<String, dynamic> toJson() {
@@ -69,6 +78,9 @@ class TreeModel {
     data['level_up_time'] = levelUpTime;
     data['water_count'] = waterCount;
     data['reward_card'] = rewardCard;
+    data['collect_time'] = collectTime;
+    data['fruit_gen_speed'] = fruitGenSpeeds;
+    data['created_at'] = createdAt;
 
     return data;
   }

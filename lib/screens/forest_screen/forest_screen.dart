@@ -34,8 +34,9 @@ class ForestScreen extends GetView<ForestController> {
               backgroundColor: Colors.transparent,
               titleString: 'Forests',
               rightViews: [
-                Obx(() =>
-                    WaterDropView(waterDrops: homeController.userWaters.value))
+                Obx(() => WaterDropView(
+                    waterDrops: homeController.userWaters.value,
+                    fruits: homeController.userFruits.value))
               ]),
           body: Column(
             children: [
